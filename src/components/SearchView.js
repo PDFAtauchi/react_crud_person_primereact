@@ -97,6 +97,9 @@ function SearchView({ handleParamsChange }) {
       weight: 0,
     },
     validationSchema: personValidation,
+    onReset: () => {
+      handleParamsChange(null);
+    },
     onSubmit: (data) => {
       const dataFormatted = { ...data };
       dataFormatted.birthday = dayjs(dataFormatted.birthday).isValid()
