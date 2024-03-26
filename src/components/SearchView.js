@@ -235,6 +235,7 @@ function SearchView({ handleParamsChange }) {
             onClick={formik.handleReset}
             label="Limpar"
             className="md:col-2 sm:col-6 m-1"
+            severity="danger"
           />
         </div>
       </Card>

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { APP_ROUTES } from "app_constants";
 import { useNavigate } from "react-router";
 import { locale, addLocale } from "primereact/api";
+import { getIdealWeight } from "helper";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 
 locale("pt");
 
@@ -15,18 +17,50 @@ addLocale("pt", {
 
 function DataTableView({ data }) {
   const navigate = useNavigate();
-  const actionTemplate = (person) => (
-    <div className="card flex justify-content-center">
-      <Button
-        severity="primary"
-        onClick={(e) =>
-          navigate(`${APP_ROUTES.UPDATE_PERSON.replace(":id", person.id)}`)
-        }
-      >
-        Detalhes
-      </Button>
-    </div>
-  );
+
+  const actionTemplate = (person) => {
+    const PopUpMessage = (event) => {
+      confirmPopup({
+        target: event.currentTarget,
+        message: getIdealWeight(person.height, person.sex),
+      });
+    };
+
+    return (
+      <div className="card flex justify-content-center">
+        <Button
+          severity="info"
+          onClick={(e) =>
+            navigate(`${APP_ROUTES.UPDATE_PERSON.replace(":id", person.id)}`)
+          }
+          className="md:col-6 m-1"
+          label="Detalhes"
+        />
+
+        <ConfirmPopup
+          content={({ message, acceptBtnRef, hide }) => (
+            <div className="p-3">
+              <span>{message}</span>
+              <div className="flex align-items-center gap-2 mt-3">
+                <Button
+                  ref={acceptBtnRef}
+                  label="Ok"
+                  onClick={() => {
+                    hide();
+                  }}
+                ></Button>
+              </div>
+            </div>
+          )}
+        />
+        <Button
+          severity="warning"
+          onClick={PopUpMessage}
+          label="Peso ideal"
+        ></Button>
+      </div>
+    );
+  };
 
   const sexTemplate = (person) => {
     const sexMap = {
